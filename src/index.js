@@ -9,8 +9,23 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, "../public")));
 
-io.on("connection", () => {
+let count = 0;
+
+io.on("connection", (socket) => {
   console.log("New websocket connection");
+
+  // socket.emit("countUpdated", count);
+  // socket.on("increment", () => {
+  //   count++;
+  //   io.emit("countUpdated", count);
+  // });
+
+  socket.emit("message", "Welcome!");
+
+  socket.on("sendMessage", (message) => {
+    console.log(message);
+    io.emit("message", message);
+  });
 });
 
 server.listen(process.env.PORT || 5001, () =>
