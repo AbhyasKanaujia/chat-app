@@ -19,14 +19,14 @@ let count = 0;
 io.on("connection", (socket) => {
   console.log("New websocket connection");
 
-  // socket.emit("countUpdated", count);
-  // socket.on("increment", () => {
-  //   count++;
-  //   io.emit("countUpdated", count);
-  // });
+  socket.on("join", ({ username, room }) => {
+    socket.join(room);
 
-  socket.emit("message", generateMessage("Welcome!"));
-  socket.broadcast.emit("message", generateMessage("A new user has joined"));
+    socket.emit("message", generateMessage("Welcome!"));
+    socket.broadcast
+      .to(room)
+      .emit("message", generateMessage(`${username} has joined the room`));
+  });
 
   socket.on("sendMessage", (message, callback) => {
     const filter = new Filter();
